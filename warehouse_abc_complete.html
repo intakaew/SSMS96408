@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>96408 – ฐานข้อมูล ABC คลังสินค้า (ฉบับสมบูรณ์)</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0D1117;--bg2:#161B22;--bd:#30363D;--tx:#E6EDF3;--mu:#8B949E;--bl:#79C0FF;--or:#FFA657;--gr:#56D364;--pk:#FF7B72;--pu:#D2A8FF;--ac:#1F6FEB;--ac2:#388BFD}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6}
+.hdr{background:var(--bg2);border-bottom:1px solid var(--bd);padding:0 20px;display:flex;align-items:stretch;min-height:54px;position:sticky;top:0;z-index:50}
+.hdr-l{display:flex;align-items:center;gap:10px;flex:1;padding:10px 0}
+.badge{background:var(--ac);color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;white-space:nowrap}
+.htitle{font-size:14px;font-weight:700;background:transparent;border:1px solid transparent;color:var(--tx);font-family:inherit;padding:2px 6px;border-radius:5px;width:340px;max-width:46vw;transition:all .15s;outline:none}
+.htitle:hover{border-color:var(--bd);background:rgba(255,255,255,.03)}
+.htitle:focus{border-color:var(--bl);background:rgba(31,111,235,.08)}
+.hsub{font-size:11px;color:var(--mu);padding:0 6px;margin-top:1px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.db-edit{background:transparent;border:1px solid transparent;color:var(--bl);font-family:monospace;font-size:11px;font-weight:700;padding:1px 5px;border-radius:4px;transition:all .15s;outline:none;width:120px}
+.db-edit:hover{border-color:var(--bd);background:rgba(255,255,255,.03)}
+.db-edit:focus{border-color:var(--bl);background:rgba(31,111,235,.08)}
+.edit-hint{font-size:9px;color:var(--mu);opacity:.6}
+.tabs{display:flex;align-self:stretch}
+.tab{padding:0 18px;cursor:pointer;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--mu);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--tx)}.tab.active{color:var(--bl);border-bottom-color:var(--bl)}
+.pb{height:2px;background:var(--bd);position:sticky;top:54px;z-index:49}.pf{height:100%;background:var(--gr);transition:width .4s}
+.layout{display:grid;grid-template-columns:215px 1fr;align-items:start}
+@media(max-width:640px){.layout{grid-template-columns:1fr}.sidebar{display:none}}
+.sidebar{background:var(--bg);border-right:1px solid var(--bd);position:sticky;top:56px;align-self:start;max-height:calc(100vh - 56px);overflow-y:auto}
+.sb-sec{padding:10px 14px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--mu)}
+.sb-item{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;transition:background .15s;border-left:3px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.05)}.sb-item.active{background:rgba(31,111,235,.1);border-left-color:var(--bl)}
+.sb-num{width:22px;height:22px;border-radius:50%;background:var(--bd);color:var(--mu);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .3s}
+.sb-item.active .sb-num{background:var(--bl);color:#0D1117}.sb-item.done .sb-num{background:var(--gr);color:#0D1117}
+.sb-lbl{font-size:11px;color:var(--mu);line-height:1.3;flex:1}.sb-item.active .sb-lbl,.sb-item.done .sb-lbl{color:var(--tx)}
+.main{padding:20px 24px;display:flex;flex-direction:column;gap:15px;min-width:0}
+.step-hdr{display:flex;align-items:flex-start;gap:12px}
+.step-icon{font-size:26px;flex-shrink:0;margin-top:2px}
+.step-title{font-size:18px;font-weight:700}.step-sub{font-size:12px;color:var(--mu);margin-top:3px;line-height:1.5}
+.cards{display:flex;gap:10px;flex-wrap:wrap}
+.card{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.cl{font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:var(--mu);margin-bottom:3px}
+.cv{font-size:12px;font-weight:700;font-family:monospace;color:var(--tx)}.cv.b{color:var(--bl)}.cv.o{color:var(--or)}.cv.g{color:var(--gr)}.cv.p{color:var(--pu)}
+.tbl-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:6px}
+.tbl-hdr{padding:7px 13px;border-bottom:1px solid var(--bd);font-size:11px;color:var(--mu)}
+table.ct{width:100%;border-collapse:collapse;font-size:11.5px}
+.ct th{text-align:left;padding:5px 12px;background:rgba(255,255,255,.04);color:var(--mu);font-size:10px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--bd);font-weight:700}
+.ct td{padding:5px 12px;border-bottom:1px solid rgba(255,255,255,.035)}.ct tr:last-child td{border-bottom:none}
+.ct td:first-child{font-family:monospace;color:var(--bl)}.ct td:nth-child(2){font-family:monospace;color:var(--or)}
+.tg{display:inline-block;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;margin:1px}
+.tg-pk{background:rgba(210,168,255,.15);color:var(--pu)}.tg-fk{background:rgba(255,166,87,.15);color:var(--or)}
+.tg-nn{background:rgba(255,123,114,.12);color:var(--pk)}.tg-nl{background:rgba(86,211,100,.12);color:var(--gr)}
+.call{border-radius:8px;padding:10px 14px;display:flex;gap:10px;align-items:flex-start;font-size:12.5px;line-height:1.55}
+.c-tip{background:rgba(31,111,235,.1);border:1px solid rgba(31,111,235,.3);color:var(--bl)}
+.c-warn{background:rgba(255,166,87,.1);border:1px solid rgba(255,166,87,.3);color:var(--or)}
+.c-ok{background:rgba(86,211,100,.1);border:1px solid rgba(86,211,100,.3);color:var(--gr)}
+.c-pur{background:rgba(210,168,255,.1);border:1px solid rgba(210,168,255,.3);color:var(--pu)}
+.ci{font-size:14px;flex-shrink:0;margin-top:1px}
+.code-box{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.code-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--bd)}
+.cd-dots{display:flex;gap:5px}.cd{width:11px;height:11px;border-radius:50%}
+.cd-lbl{font-size:11px;color:var(--mu);margin-left:8px}
+.cpbtn{background:rgba(255,255,255,.07);border:1px solid var(--bd);color:var(--mu);padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;transition:all .2s}
+.cpbtn:hover{background:rgba(255,255,255,.12);color:var(--tx)}.cpbtn.ok{background:rgba(86,211,100,.15);border-color:var(--gr);color:var(--gr)}
+.code-scroll{display:flex;overflow-x:auto}
+.ln-gutter{flex-shrink:0;padding:15px 0;text-align:right;background:rgba(0,0,0,.18);border-right:1px solid var(--bd);user-select:none;font-family:'Cascadia Code','Consolas',monospace;font-size:12.5px;line-height:1.75;color:#4a5160;min-width:42px}
+.ln-gutter span{display:block;padding:0 10px}
+pre{flex:1;padding:15px 18px;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:12.5px;line-height:1.75;white-space:pre;min-width:0}
+.code-scroll::-webkit-scrollbar{height:10px}
+.code-scroll::-webkit-scrollbar-thumb{background:#3a4150;border-radius:5px;border:2px solid var(--bg2)}
+.code-scroll::-webkit-scrollbar-thumb:hover{background:#4a5160}
+.code-scroll::-webkit-scrollbar-corner{background:var(--bg2)}
+.kw{color:#FF7B72;font-weight:700}.ty{color:#79C0FF}.cm{color:#5c6370;font-style:italic}.st{color:#98c379}.nb{color:#d19a66}
+.res-wrap{background:var(--bg2);border:1px solid var(--bd);border-radius:8px;overflow:hidden}
+.res-hdr{padding:8px 14px;border-bottom:1px solid var(--bd);font-size:11px;color:var(--gr);display:flex;align-items:center;gap:6px}
+table.rt{width:100%;border-collapse:collapse;font-size:12px}
+.rt th{text-align:left;padding:6px 12px;background:rgba(255,255,255,.04);color:var(--mu);font-size:10px;text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--bd);font-weight:700}
+.rt td{padding:6px 12px;border-bottom:1px solid rgba(255,255,255,.035);font-family:monospace;color:var(--tx)}.rt tr:last-child td{border-bottom:none}
+.res-note{padding:7px 14px;font-size:11px;color:var(--mu);border-top:1px solid var(--bd)}
+.nav-row{display:flex;gap:10px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--bd)}
+.btn{padding:8px 20px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+.btn-p{background:transparent;border:1px solid var(--bd);color:var(--mu)}.btn-p:hover:not(:disabled){border-color:var(--mu);color:var(--tx)}
+.btn-n{background:var(--ac);color:#fff}.btn-n:hover:not(:disabled){background:var(--ac2)}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}::-webkit-scrollbar-track{background:transparent}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-l">
+    <span class="badge">96408</span>
+    <div style="flex:1;min-width:0">
+      <input class="htitle" id="projTitle" value="ฐานข้อมูลคลังสินค้า บริษัท ABC — ฉบับสมบูรณ์" spellcheck="false" title="คลิกเพื่อแก้ไขชื่อโปรเจค">
+      <div class="hsub">
+        <span>กิจกรรมที่ 4 (DDL + DML) · กิจกรรมที่ 5 (SELECT) ·</span>
+        <input class="db-edit" id="dbName" value="ABC_Inventory" spellcheck="false" title="คลิกเพื่อแก้ไขชื่อฐานข้อมูล — โค้ดทุกขั้นจะเปลี่ยนตาม">
+        <span>· T-SQL</span>
+        <span class="edit-hint">✏️ คลิกแก้ไขได้</span>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" onclick="switchCh(0)" id="t0">🏗️ DDL</div>
+    <div class="tab" onclick="switchCh(1)" id="t1">📝 DML</div>
+    <div class="tab" onclick="switchCh(2)" id="t2">🔍 SELECT</div>
+  </div>
+</div>
+<div class="pb"><div class="pf" id="pf"></div></div>
+<div class="layout">
+  <div class="sidebar" id="sb"></div>
+  <div class="main" id="mn"></div>
+</div>
+<script>
+const CHS=[
+// ══════════════════════════════════════════════════
+// CHAPTER 0: DDL
+// ══════════════════════════════════════════════════
+{id:0,label:'DDL (โครงสร้าง)',steps:[
+{icon:'🗄️',title:'สร้างฐานข้อมูล',sub:'CREATE DATABASE · USE · เลือกฐานข้อมูล',
+ cards:[{l:'ชื่อ DB',v:'{{DB}}',c:'b'},{l:'คำสั่ง',v:'CREATE DATABASE',c:'b'},{l:'เลือกใช้',v:'USE',c:'o'}],
+ notes:[
+   {t:'tip',i:'💡',x:'CREATE DATABASE เหมือนซื้อตู้เก็บแฟ้มใหม่  USE คือการเดินไปเปิดตู้ใบนั้นก่อนทำงาน'},
+   {t:'warn',i:'⚠️',x:'ต้องพิมพ์ USE ทุกครั้งที่เปิด Query Editor ใหม่  มิฉะนั้นคำสั่งจะทำงานกับ DB ผิดตัว!'}
+ ],
+ code:`-- STEP 0: สร้างฐานข้อมูล
+CREATE DATABASE {{DB}};
+GO
+
+-- เลือกใช้ฐานข้อมูลนี้
+USE {{DB}};
+GO`},
+
+{icon:'🗑️',title:'DROP TABLE (Safety Reset)',sub:'ลบตารางเดิมถ้ามี · ลำดับ Child → Parent',
+ cards:[{l:'คำสั่ง',v:'IF OBJECT_ID + DROP',c:'b'},{l:'ลำดับ',v:'Child ก่อน Parent',c:'o'},{l:'ผล',v:'Reset ปลอดภัย',c:'g'}],
+ notes:[
+   {t:'warn',i:'⚠️',x:'ต้องลบ Child table ก่อน Parent เสมอ  เพราะ Child มี FK อ้างอิงไป Parent  ถ้าลบ Parent ก่อนจะ Error'},
+   {t:'tip',i:'💡',x:'IF OBJECT_ID(\'...\',\'U\') IS NOT NULL ตรวจว่ามีตารางอยู่ก่อน  ถ้าไม่มีก็ข้ามไป ไม่ Error'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- DROP ตารางเดิม เรียงลำดับ Child → Parent
+IF OBJECT_ID('invoice_inventory', 'U') IS NOT NULL  DROP TABLE invoice_inventory;
+IF OBJECT_ID('product_inventory', 'U') IS NOT NULL  DROP TABLE product_inventory;
+IF OBJECT_ID('order_product',     'U') IS NOT NULL  DROP TABLE order_product;
+IF OBJECT_ID('product',           'U') IS NOT NULL  DROP TABLE product;
+IF OBJECT_ID('type_color',        'U') IS NOT NULL  DROP TABLE type_color;
+IF OBJECT_ID('invoice',           'U') IS NOT NULL  DROP TABLE invoice;
+IF OBJECT_ID('inventory_item',    'U') IS NOT NULL  DROP TABLE inventory_item;
+IF OBJECT_ID('ordered',           'U') IS NOT NULL  DROP TABLE ordered;
+GO`},
+
+{icon:'📋',title:'CREATE TABLE — Parent (ไม่มี FK)',sub:'4 ตารางแรก · type_color · ordered · inventory_item · invoice',
+ cols:[
+   {tbl:'type_color',rows:[{n:'product_type',dt:'char(20)',nl:'NOT NULL',k:'PK'},{n:'product_color',dt:'char(20)',nl:'NOT NULL',k:''}]},
+   {tbl:'ordered',rows:[{n:'order_no',dt:'char(4)',nl:'NOT NULL',k:'PK'},{n:'order_date',dt:'datetime',nl:'NOT NULL',k:''},{n:'customer_name',dt:'char(30)',nl:'NOT NULL',k:''},{n:'ship_date',dt:'datetime',nl:'NOT NULL',k:''},{n:'ship_address',dt:'char(20)',nl:'NOT NULL',k:''},{n:'ship_district',dt:'char(20)',nl:'NULL',k:''},{n:'ship_province',dt:'char(20)',nl:'NOT NULL',k:''},{n:'customer_phone',dt:'char(12)',nl:'NULL',k:''}]},
+   {tbl:'inventory_item',rows:[{n:'item_no',dt:'char(4)',nl:'NOT NULL',k:'PK'},{n:'item_des',dt:'char(30)',nl:'NULL',k:''},{n:'quantity_in_stock',dt:'int',nl:'NOT NULL',k:''},{n:'min_order_quantity',dt:'int',nl:'NOT NULL',k:''}]},
+   {tbl:'invoice',rows:[{n:'vendor_no',dt:'char(4)',nl:'NOT NULL',k:'PK'},{n:'invoice_no',dt:'char(4)',nl:'NOT NULL',k:'PK'},{n:'invoice_date',dt:'datetime',nl:'NOT NULL',k:''}]}
+ ],
+ notes:[{t:'tip',i:'💡',x:'ตาราง Parent ไม่มี FK จึงสร้างได้โดยไม่ต้องพึ่งตารางอื่น  สร้างก่อน Child เสมอ!'}],
+ code:`USE {{DB}};
+GO
+
+-- ตาราง 1: TYPE_COLOR (ไม่มี FK — สร้างก่อน)
+-- เกิดจาก 3NF: PRODUCT_TYPE → PRODUCT_COLOR จึงแยกออกมา
+CREATE TABLE type_color (
+    product_type  char(20) NOT NULL,
+    product_color char(20) NOT NULL,
+    CONSTRAINT pk_type_color PRIMARY KEY (product_type)
+);
+
+-- ตาราง 2: ORDERED (ไม่มี FK)
+CREATE TABLE ordered (
+    order_no        char(4)   NOT NULL,
+    order_date      datetime  NOT NULL,
+    customer_name   char(30)  NOT NULL,
+    ship_date       datetime  NOT NULL,
+    ship_address    char(20)  NOT NULL,
+    ship_district   char(20)  NULL,
+    ship_province   char(20)  NOT NULL,
+    customer_phone  char(12)  NULL,
+    CONSTRAINT pk_ordered PRIMARY KEY (order_no)
+);
+
+-- ตาราง 3: INVENTORY_ITEM (ไม่มี FK)
+CREATE TABLE inventory_item (
+    item_no              char(4)  NOT NULL,
+    item_des             char(30) NULL,
+    quantity_in_stock    int      NOT NULL,
+    min_order_quantity   int      NOT NULL,
+    CONSTRAINT pk_inventory_item PRIMARY KEY (item_no)
+);
+
+-- ตาราง 4: INVOICE (Composite PK — ไม่มี FK)
+CREATE TABLE invoice (
+    vendor_no     char(4)   NOT NULL,
+    invoice_no    char(4)   NOT NULL,
+    invoice_date  datetime  NOT NULL,
+    CONSTRAINT pk_invoice PRIMARY KEY (vendor_no, invoice_no)
+);
+GO`},
+
+{icon:'🔗',title:'CREATE TABLE — Child (มี FK)',sub:'4 ตารางสุดท้าย · product · order_product · product_inventory · invoice_inventory',
+ cols:[
+   {tbl:'product',rows:[{n:'product_no',dt:'char(4)',nl:'NOT NULL',k:'PK'},{n:'product_des',dt:'char(30)',nl:'NOT NULL',k:''},{n:'product_type',dt:'char(20)',nl:'NOT NULL',k:'FK'}]},
+   {tbl:'order_product',rows:[{n:'order_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'product_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'quantity_ordered',dt:'int',nl:'NOT NULL',k:''}]},
+   {tbl:'product_inventory',rows:[{n:'product_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'item_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'quantity_used',dt:'int',nl:'NOT NULL',k:''}]},
+   {tbl:'invoice_inventory',rows:[{n:'vendor_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'invoice_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'item_no',dt:'char(4)',nl:'NOT NULL',k:'PK+FK'},{n:'quantity_added',dt:'int',nl:'NOT NULL',k:''},{n:'item_paid',dt:'decimal',nl:'NOT NULL',k:''}]}
+ ],
+ notes:[{t:'warn',i:'⚠️',x:'ต้องสร้าง Parent 4 ตารางก่อนแล้ว  ถ้า REFERENCES ไปตารางที่ยังไม่มี จะ Error ทันที'}],
+ code:`USE {{DB}};
+GO
+
+-- ตาราง 5: PRODUCT (FK → type_color)
+CREATE TABLE product (
+    product_no    char(4)   NOT NULL,
+    product_des   char(30)  NOT NULL,
+    product_type  char(20)  NOT NULL,
+    CONSTRAINT pk_product    PRIMARY KEY (product_no),
+    CONSTRAINT fk_product_tc FOREIGN KEY (product_type)
+        REFERENCES type_color(product_type)
+);
+
+-- ตาราง 6: ORDER_PRODUCT (Bridge M:N — FK → ordered, product)
+CREATE TABLE order_product (
+    order_no          char(4)  NOT NULL,
+    product_no        char(4)  NOT NULL,
+    quantity_ordered  int      NOT NULL,
+    CONSTRAINT pk_order_product PRIMARY KEY (order_no, product_no),
+    CONSTRAINT fk_op_ordered    FOREIGN KEY (order_no)
+        REFERENCES ordered(order_no),
+    CONSTRAINT fk_op_product    FOREIGN KEY (product_no)
+        REFERENCES product(product_no)
+);
+
+-- ตาราง 7: PRODUCT_INVENTORY (Bridge M:N — FK → product, inventory_item)
+CREATE TABLE product_inventory (
+    product_no    char(4)  NOT NULL,
+    item_no       char(4)  NOT NULL,
+    quantity_used int      NOT NULL,
+    CONSTRAINT pk_product_inventory PRIMARY KEY (product_no, item_no),
+    CONSTRAINT fk_pi_product        FOREIGN KEY (product_no)
+        REFERENCES product(product_no),
+    CONSTRAINT fk_pi_item           FOREIGN KEY (item_no)
+        REFERENCES inventory_item(item_no)
+);
+
+-- ตาราง 8: INVOICE_INVENTORY (สร้างสุดท้าย — FK → invoice composite + inventory_item)
+CREATE TABLE invoice_inventory (
+    vendor_no      char(4)   NOT NULL,
+    invoice_no     char(4)   NOT NULL,
+    item_no        char(4)   NOT NULL,
+    quantity_added int       NOT NULL,
+    item_paid      decimal   NOT NULL,
+    CONSTRAINT pk_invoice_inventory PRIMARY KEY (vendor_no, invoice_no, item_no),
+    CONSTRAINT fk_ii_invoice        FOREIGN KEY (vendor_no, invoice_no)
+        REFERENCES invoice(vendor_no, invoice_no),
+    CONSTRAINT fk_ii_item           FOREIGN KEY (item_no)
+        REFERENCES inventory_item(item_no)
+);
+GO
+
+PRINT '=== สร้างตารางทั้ง 8 ตารางเรียบร้อย ===';
+GO`},
+
+{icon:'✏️',title:'ALTER TABLE',sub:'เพิ่มคอลัมน์ · เปลี่ยน Data Type · กิจกรรมที่ 4 ข้อ 2',
+ cards:[{l:'ADD column',v:'item_place',c:'b'},{l:'ALTER COLUMN',v:'customer_phone',c:'o'},{l:'รวม',v:'3 คำสั่ง',c:'g'}],
+ notes:[
+   {t:'tip',i:'💡',x:'ALTER TABLE ADD เพิ่มคอลัมน์ใหม่  ALTER TABLE ALTER COLUMN เปลี่ยนชนิดข้อมูลของคอลัมน์ที่มีอยู่'},
+   {t:'warn',i:'⚠️',x:'SQL Server: ถ้าคอลัมน์มีข้อมูลอยู่แล้ว การเปลี่ยนชนิดข้อมูลอาจ Error ถ้าข้อมูลเก่าแปลงไม่ได้'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- 3.1 เพิ่มคอลัมน์ item_place ในตาราง inventory_item
+ALTER TABLE inventory_item
+ADD item_place char(25) NULL;
+
+-- 3.2 เปลี่ยน customer_phone จาก char(12) → int
+ALTER TABLE ordered
+ALTER COLUMN customer_phone int NULL;
+
+-- 3.3 เปลี่ยนกลับเป็น char(12) เพื่อเก็บข้อมูลจริง
+ALTER TABLE ordered
+ALTER COLUMN customer_phone char(12) NULL;
+GO
+
+PRINT '=== ALTER TABLE เรียบร้อย ===';
+GO`}
+]},
+
+// ══════════════════════════════════════════════════
+// CHAPTER 1: DML
+// ══════════════════════════════════════════════════
+{id:1,label:'DML (ข้อมูล)',steps:[
+{icon:'🌈',title:'INSERT: type_color + ordered',sub:'ใส่ข้อมูล Parent 2 ตารางแรก · 3 + 5 แถว',
+ cards:[{l:'type_color',v:'3 แถว',c:'g'},{l:'ordered',v:'5 แถว',c:'g'},{l:'ต้องใส่ก่อน',v:'product ต้อง FK มา',c:'o'}],
+ notes:[
+   {t:'tip',i:'💡',x:'ต้อง INSERT type_color ก่อน  เพราะตาราง product จะ FK ไปที่ product_type  ถ้า type_color ว่างอยู่ INSERT product จะ Error'},
+   {t:'warn',i:'⚠️',x:'ลำดับ INSERT สำคัญเหมือนลำดับ CREATE!  Parent ก่อน Child เสมอ'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- INSERT type_color (3 ประเภท-สี)
+INSERT INTO type_color VALUES ('ไม้แดง', 'เทา');
+INSERT INTO type_color VALUES ('ไม้ยาง', 'ครีม');
+INSERT INTO type_color VALUES ('ไม้สัก', 'น้ำตาล');
+
+-- INSERT ordered (5 ใบสั่งซื้อ)
+INSERT INTO ordered VALUES ('001','2006-12-15','ดำรง เชื้อชาติ', '2007-01-15','2/3 ติวานนท์',   'เมือง',    'นนทบุรี',  '02-5857321');
+INSERT INTO ordered VALUES ('002','2006-12-15','สุดใจ มากมี',    '2007-02-10','989 งามวงศ์วาน', 'เมือง',    'นนทบุรี',  '02-9346971');
+INSERT INTO ordered VALUES ('003','2006-12-15','ดีพร้อม ความสุข','2007-01-15','2/4 สามเสน',     'ดุสิต',    'กรุงเทพฯ', '02-5847562');
+INSERT INTO ordered VALUES ('004','2006-12-15','คิดมาก ยากจน',   '2007-02-10','100 พหลโยธิน',   'พญาไท',    'กรุงเทพฯ', '02-6802514');
+INSERT INTO ordered VALUES ('005','2006-12-15','สมหวัง ชีวิตดี', '2007-02-09','24/5 แจ้งวัฒนะ', 'ปากเกร็ด', 'นนทบุรี',  '02-5838687');
+GO`},
+
+{icon:'🔩',title:'INSERT: inventory_item + invoice',sub:'ชิ้นส่วนในคลัง 7 รายการ · ใบส่งของ 5 ใบ',
+ cards:[{l:'inventory_item',v:'7 แถว',c:'g'},{l:'invoice',v:'5 แถว',c:'g'},{l:'Composite PK',v:'vendor_no+invoice_no',c:'b'}],
+ notes:[{t:'tip',i:'💡',x:'INVOICE มี Composite PK (vendor_no + invoice_no)  ค่าคู่นี้ต้องไม่ซ้ำกัน  V101 มี 4 ใบ  V102 มี 1 ใบ'}],
+ code:`USE {{DB}};
+GO
+
+-- INSERT inventory_item (7 ชิ้นส่วน)
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I111', 'ขาโต๊ะไม้ยาง',                   20, 16);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I112', 'ขาโต๊ะไม้แดง',                   24, 16);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I113', 'ขาโต๊ะไม้สัก',                   20, 16);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I121', 'พื้นเก้าอี้ 1ฟุตX1.5ฟุตไม้ยาง',  12,  4);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I122', 'พื้นเก้าอี้ 1ฟุตX1.5ฟุตไม้แดง',  12,  4);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I221', 'ฝาบน 2ฟุตX3ฟุต ไม้ยาง',           12,  4);
+INSERT INTO inventory_item (item_no, item_des, quantity_in_stock, min_order_quantity)
+    VALUES ('I222', 'ฝาบน 2ฟุตX3ฟุต ไม้แดง',           10,  4);
+
+-- INSERT invoice (5 ใบส่งของ)
+INSERT INTO invoice VALUES ('V101', '5001', '2007-01-01');
+INSERT INTO invoice VALUES ('V101', '5002', '2007-02-01');
+INSERT INTO invoice VALUES ('V101', '6003', '2007-01-07');
+INSERT INTO invoice VALUES ('V101', '7001', '2007-02-16');
+INSERT INTO invoice VALUES ('V102', '5001', '2007-02-15');
+GO`},
+
+{icon:'📦',title:'INSERT: product + order_product + product_inventory + invoice_inventory',sub:'Child Tables ทั้ง 4 · ต้องมีข้อมูล Parent ก่อน',
+ cards:[{l:'product',v:'5 แถว',c:'g'},{l:'order_product',v:'5 แถว',c:'g'},{l:'invoice_inventory',v:'5 แถว',c:'g'}],
+ notes:[{t:'warn',i:'⚠️',x:'FK Constraint: ค่าที่ใส่ใน Child ต้องมีอยู่ใน Parent ก่อนแล้ว  เช่น product_type \'ไม้ยาง\' ต้องมีใน type_color แล้ว'}],
+ code:`USE {{DB}};
+GO
+
+-- INSERT product (5 ผลิตภัณฑ์)
+INSERT INTO product VALUES ('P101', 'โต๊ะ',        'ไม้ยาง');
+INSERT INTO product VALUES ('P102', 'โต๊ะ',        'ไม้แดง');
+INSERT INTO product VALUES ('P103', 'โต๊ะ',        'ไม้สัก');
+INSERT INTO product VALUES ('P201', 'ตู้เสื้อผ้า', 'ไม้ยาง');
+INSERT INTO product VALUES ('P202', 'ตู้เสื้อผ้า', 'ไม้แดง');
+
+-- INSERT order_product (5 รายการสั่งซื้อ)
+INSERT INTO order_product VALUES ('001', 'P101', 1);
+INSERT INTO order_product VALUES ('001', 'P103', 6);
+INSERT INTO order_product VALUES ('002', 'P102', 1);
+INSERT INTO order_product VALUES ('002', 'P201', 1);
+INSERT INTO order_product VALUES ('002', 'P202', 1);
+
+-- INSERT product_inventory (5 รายการชิ้นส่วน)
+INSERT INTO product_inventory VALUES ('P101', 'I111', 4);
+INSERT INTO product_inventory VALUES ('P101', 'I221', 1);
+INSERT INTO product_inventory VALUES ('P102', 'I112', 4);
+INSERT INTO product_inventory VALUES ('P102', 'I222', 1);
+INSERT INTO product_inventory VALUES ('P103', 'I113', 1);
+
+-- INSERT invoice_inventory (5 รายการใบกำกับ)
+INSERT INTO invoice_inventory VALUES ('V101', '5001', 'I111', 10, 5000);
+INSERT INTO invoice_inventory VALUES ('V101', '5001', 'I112', 10, 4000);
+INSERT INTO invoice_inventory VALUES ('V101', '5002', 'I121', 10, 4000);
+INSERT INTO invoice_inventory VALUES ('V101', '6003', 'I122', 13, 2600);
+INSERT INTO invoice_inventory VALUES ('V102', '5001', 'I113', 12, 2400);
+GO
+
+PRINT '=== INSERT DATA เรียบร้อยทุกตาราง ===';
+GO`},
+
+{icon:'🔄',title:'UPDATE & DELETE',sub:'แก้ไขและลบข้อมูล · กิจกรรมที่ 4 ข้อ 4',
+ cards:[{l:'UPDATE',v:'เปลี่ยน ship_province',c:'o'},{l:'DELETE',v:'ลบ คิดมาก ยากจน',c:'b'},{l:'FK Rule',v:'ลบ Child ก่อน',c:'p'}],
+ notes:[
+   {t:'tip',i:'💡',x:'UPDATE แก้ข้อมูลในแถวที่ระบุ  DELETE ลบทั้งแถว  ต้องใช้ WHERE เสมอ  ไม่งั้นจะแก้/ลบทุกแถว!'},
+   {t:'warn',i:'⚠️',x:'ลบ ordered ตรงๆ ไม่ได้!  เพราะ order_product มี FK → ordered  ต้องลบ order_product ก่อน'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- UPDATE: เปลี่ยน ship_province ของ 'คิดมาก ยากจน' เป็น 'นนทบุรี'
+UPDATE ordered
+SET    ship_province = 'นนทบุรี'
+WHERE  customer_name = 'คิดมาก ยากจน';
+
+-- ตรวจสอบผลหลัง UPDATE
+SELECT order_no, customer_name, ship_province
+FROM   ordered
+WHERE  customer_name = 'คิดมาก ยากจน';
+
+-- DELETE: ต้องลบ Child (order_product) ก่อนเสมอ
+DELETE FROM order_product
+WHERE order_no IN (
+    SELECT order_no FROM ordered
+    WHERE  customer_name = 'คิดมาก ยากจน'
+);
+
+-- จึงลบ Parent (ordered) ได้
+DELETE FROM ordered
+WHERE customer_name = 'คิดมาก ยากจน';
+
+PRINT '=== UPDATE และ DELETE เรียบร้อย ===';
+GO`,
+ result:{hdr:'ผลลัพธ์หลัง UPDATE (ก่อน DELETE)',cols:['order_no','customer_name','ship_province'],
+   rows:[['004','คิดมาก ยากจน','นนทบุรี']],note:'ship_province เปลี่ยนจาก กรุงเทพฯ → นนทบุรี แล้วแถวนี้จะถูกลบในขั้นตอนถัดไป'}}
+]},
+
+// ══════════════════════════════════════════════════
+// CHAPTER 2: SELECT
+// ══════════════════════════════════════════════════
+{id:2,label:'SELECT (กิจกรรม 5)',steps:[
+{icon:'📄',title:'โจทย์ 1-2: SELECT + ORDER BY',sub:'แสดงข้อมูลทุกแถว · เรียงลำดับ',
+ cards:[{l:'คำสั่ง',v:'SELECT ... FROM',c:'b'},{l:'เรียง',v:'ORDER BY ASC',c:'o'},{l:'ตาราง',v:'ordered',c:''}],
+ notes:[{t:'tip',i:'💡',x:'ASC = น้อยไปมาก (ค่าเริ่มต้น)  DESC = มากไปน้อย  ไทย: ก < ข < ค < ... < ฮ  ORDER BY ไม่ใส่จะเรียงตามที่ DB เก็บ (ไม่แน่นอน)'}],
+ code:`USE {{DB}};
+GO
+
+-- โจทย์ที่ 1: ชื่อลูกค้า เลขที่ใบสั่งซื้อ วันที่สั่งซื้อ ของลูกค้าทุกคน
+SELECT customer_name, order_no, order_date
+FROM   ordered;
+
+-- โจทย์ที่ 2: ชื่อและที่อยู่ส่งของ เรียงตามชื่อลูกค้า ก → ฮ
+SELECT customer_name, ship_address, ship_district, ship_province
+FROM   ordered
+ORDER BY customer_name ASC;`,
+ result:{hdr:'ผลลัพธ์ โจทย์ที่ 1 (หลัง DELETE คิดมาก ยากจน)',
+   cols:['customer_name','order_no','order_date'],
+   rows:[['ดำรง เชื้อชาติ','001','2006-12-15'],['สุดใจ มากมี','002','2006-12-15'],['ดีพร้อม ความสุข','003','2006-12-15'],['สมหวัง ชีวิตดี','005','2006-12-15']],
+   note:'order_no 004 (คิดมาก ยากจน) ถูก DELETE ไปแล้ว จึงไม่ปรากฏในผลลัพธ์'}},
+
+{icon:'🔍',title:'โจทย์ 3-5: DISTINCT · WHERE · BETWEEN',sub:'ตัดซ้ำ · กรองเงื่อนไข · ช่วงตัวเลข',
+ cards:[{l:'DISTINCT',v:'ตัดค่าซ้ำ',c:'b'},{l:'WHERE >',v:'มากกว่า 15',c:'o'},{l:'BETWEEN',v:'10 AND 20',c:'g'}],
+ notes:[
+   {t:'tip',i:'💡',x:'BETWEEN 10 AND 20  เท่ากับ  >= 10 AND <= 20  (รวมขอบทั้งสองด้าน)'},
+   {t:'tip',i:'💡',x:'DISTINCT ตัดค่าซ้ำในผลลัพธ์  ไม่ได้เปลี่ยนข้อมูลในตาราง'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- โจทย์ที่ 3: จังหวัดส่งของที่ไม่ซ้ำกัน เรียง ก → ฮ
+SELECT DISTINCT ship_province
+FROM   ordered
+ORDER BY ship_province;
+
+-- โจทย์ที่ 4: ชิ้นส่วนที่มีในคลัง > 15 ชิ้น
+SELECT item_no, item_des, quantity_in_stock
+FROM   inventory_item
+WHERE  quantity_in_stock > 15;
+
+-- โจทย์ที่ 5: ชิ้นส่วนที่มีในคลัง 10–20 ชิ้น (รวมขอบ)
+SELECT item_no, item_des, quantity_in_stock
+FROM   inventory_item
+WHERE  quantity_in_stock BETWEEN 10 AND 20;`,
+ result:{hdr:'ผลลัพธ์ โจทย์ที่ 4 (quantity_in_stock > 15)',
+   cols:['item_no','item_des','quantity_in_stock'],
+   rows:[['I111','ขาโต๊ะไม้ยาง','20'],['I112','ขาโต๊ะไม้แดง','24'],['I113','ขาโต๊ะไม้สัก','20']],
+   note:'โจทย์ 5 (BETWEEN 10–20): ได้ I111,I113,I121,I122,I221,I222 — ยกเว้น I112 (24 เกิน 20)'}},
+
+{icon:'🔎',title:'โจทย์ 6-7: LIKE Pattern Matching',sub:'ค้นหาด้วยรูปแบบอักษร',
+ cards:[{l:'_ underscore',v:'แทน 1 ตัวอักษร',c:'b'},{l:'% percent',v:'แทนหลายตัวอักษร',c:'o'},{l:'N prefix',v:'สำหรับ Unicode ไทย',c:'p'}],
+ notes:[
+   {t:'tip',i:'💡',x:'_ม% หมายถึง: ตัวอักษร 1 ตัวใดก็ได้ + ม + ตามด้วยอะไรก็ได้  เช่น ส+ม+หวัง = สมหวัง'},
+   {t:'tip',i:'💡',x:'ใช้ N ก่อน string ภาษาไทย เช่น LIKE N\'ส%\'  เพื่อให้ SQL Server ประมวลผล Unicode ถูกต้อง'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- โจทย์ที่ 6: ลูกค้าที่มีอักษร 'ม' ในตำแหน่งที่ 2
+-- _ = 1 ตัวอักษรใดก็ได้, ม = ตำแหน่งที่ 2, % = ตามด้วยอะไรก็ได้
+SELECT customer_name, order_no, order_date
+FROM   ordered
+WHERE  customer_name LIKE N'_ม%';
+
+-- โจทย์ที่ 7: ลูกค้าที่ชื่อขึ้นต้นด้วย 'ส'
+SELECT customer_name, order_no, order_date
+FROM   ordered
+WHERE  customer_name LIKE N'ส%';`,
+ result:{hdr:'ผลลัพธ์ โจทย์ที่ 7 (ชื่อขึ้นต้น ส)',
+   cols:['customer_name','order_no','order_date'],
+   rows:[['สุดใจ มากมี','002','2006-12-15'],['สมหวัง ชีวิตดี','005','2006-12-15']],
+   note:'โจทย์ 6 (_ม%): สมหวัง ชีวิตดี ตรงเงื่อนไข (ส=ตัวที่1, ม=ตัวที่2)'}},
+
+{icon:'📊',title:'โจทย์ 8: GROUP BY + COUNT',sub:'จัดกลุ่มนับจำนวนใบส่งของ',
+ cards:[{l:'COUNT(*)',v:'นับจำนวนแถว',c:'b'},{l:'GROUP BY',v:'จัดกลุ่มก่อนนับ',c:'o'},{l:'WHERE',v:'กรองก่อน GROUP',c:'g'}],
+ notes:[
+   {t:'tip',i:'💡',x:'ลำดับ SQL: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY  WHERE กรองแถวก่อน GROUP BY จัดกลุ่ม'},
+   {t:'pur',i:'📌',x:'HAVING ใช้กรองหลัง GROUP BY  เช่น HAVING COUNT(*) > 2  ต่างจาก WHERE ที่กรองก่อนจัดกลุ่ม'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- โจทย์ที่ 8: จำนวนใบส่งของจากโรงงาน V101
+SELECT   vendor_no, COUNT(*) AS จำนวนใบส่งของ
+FROM     invoice
+WHERE    vendor_no = 'V101'
+GROUP BY vendor_no;`,
+ result:{hdr:'ผลลัพธ์ โจทย์ที่ 8',cols:['vendor_no','จำนวนใบส่งของ'],
+   rows:[['V101','4']],
+   note:'V101 มี 4 ใบ: 5001, 5002, 6003, 7001  (V102 ถูก WHERE กรองออกก่อน GROUP BY)'}},
+
+{icon:'⭐',title:'BONUS: Multi-Table JOIN',sub:'เชื่อม 4 ตาราง · ข้อมูลครบวงจร',
+ cards:[{l:'ตาราง',v:'4 ตาราง JOIN',c:'b'},{l:'ON clause',v:'FK = PK',c:'o'},{l:'ผลลัพธ์',v:'5 แถว',c:'g'}],
+ notes:[
+   {t:'tip',i:'💡',x:'INNER JOIN แสดงเฉพาะแถวที่มี match ทั้ง 2 ฝั่ง  ถ้าตาราง A ไม่มีคู่ใน B แถวนั้นจะหายไปจากผลลัพธ์'},
+   {t:'pur',i:'📌',x:'Alias (o, op, p, tc) ช่วยย่อชื่อตาราง  ทำให้เขียน ON o.order_no = op.order_no ได้สั้นกว่า'}
+ ],
+ code:`USE {{DB}};
+GO
+
+-- BONUS: JOIN 4 ตาราง — ผลิตภัณฑ์พร้อมสีและใบสั่งซื้อ
+SELECT   o.order_no,
+         o.customer_name,
+         p.product_des,
+         tc.product_color,
+         op.quantity_ordered
+FROM     ordered       AS o
+JOIN     order_product AS op ON o.order_no    = op.order_no
+JOIN     product       AS p  ON op.product_no  = p.product_no
+JOIN     type_color    AS tc ON p.product_type  = tc.product_type
+ORDER BY o.order_no;`,
+ result:{hdr:'ผลลัพธ์ BONUS JOIN',
+   cols:['order_no','customer_name','product_des','product_color','quantity_ordered'],
+   rows:[
+     ['001','ดำรง เชื้อชาติ','โต๊ะ','ครีม','1'],
+     ['001','ดำรง เชื้อชาติ','โต๊ะ','น้ำตาล','6'],
+     ['002','สุดใจ มากมี','โต๊ะ','เทา','1'],
+     ['002','สุดใจ มากมี','ตู้เสื้อผ้า','ครีม','1'],
+     ['002','สุดใจ มากมี','ตู้เสื้อผ้า','เทา','1']
+   ],
+   note:'order_no 003 และ 005 ไม่ปรากฏ เพราะไม่มีข้อมูลใน order_product (INNER JOIN กรองออก)'}}
+]}
+];
+
+// ── Syntax Highlighter ──
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function findCI(l){let ins=false;for(let i=0;i<l.length-1;i++){if(l[i]==="'")ins=!ins;if(!ins&&l[i]==='-'&&l[i+1]==='-')return i;}return -1}
+const KWS='CREATE|DATABASE|TABLE|GO|USE|SELECT|FROM|WHERE|ORDER|BY|NOT|NULL|PRIMARY|KEY|FOREIGN|REFERENCES|INSERT|INTO|VALUES|AND|OR|DISTINCT|UPDATE|SET|DELETE|ALTER|ADD|COUNT|AS|GROUP|OBJECT_ID|DROP|IF|IS|BETWEEN|LIKE|CONSTRAINT|ON|JOIN|PRINT|HAVING|ASC|DESC|INNER';
+const TYS='char|int|datetime|decimal|varchar|nvarchar';
+function procCode(s){
+  const pts=[];let i=0;
+  while(i<s.length){
+    if(s[i]==="'"){let j=i+1;while(j<s.length&&s[j]!=="'")j++;pts.push({str:true,t:s.slice(i,j+1)});i=j+1;}
+    else{let j=i;while(j<s.length&&s[j]!=="'")j++;pts.push({str:false,t:s.slice(i,j)});i=j;}
+  }
+  return pts.map(p=>{
+    if(p.str)return`<span class="st">${esc(p.t)}</span>`;
+    let r=esc(p.t);
+    r=r.replace(new RegExp(`\\b(${KWS})\\b`,'gi'),'<span class="kw">$1</span>');
+    r=r.replace(new RegExp(`\\b(${TYS})\\b`,'gi'),'<span class="ty">$1</span>');
+    r=r.replace(/\b(\d+)\b/g,'<span class="nb">$1</span>');
+    return r;
+  }).join('');
+}
+function hlSQL(code){
+  return code.split('\n').map(l=>{
+    if(l.trim().startsWith('--'))return`<span class="cm">${esc(l)}</span>`;
+    const ci=findCI(l);
+    return procCode(ci>=0?l.slice(0,ci):l)+(ci>=0?`<span class="cm">${esc(l.slice(ci))}</span>`:'');
+  }).join('\n');
+}
+
+// ── State ──
+let curCh=0,curSt=0;
+const done={0:new Set(),1:new Set(),2:new Set()};
+
+// ── Helpers ──
+function tagH(k){
+  if(!k)return'';
+  return k.split('+').map(t=>{t=t.trim();
+    if(t==='PK'||t.startsWith('PK'))return`<span class="tg tg-pk">PK</span>`;
+    if(t==='FK'||t.startsWith('FK'))return`<span class="tg tg-fk">FK</span>`;
+    return`<span class="tg tg-pk">${t}</span>`;
+  }).join(' ');
+}
+function nlT(nl){return nl==='NULL'?'<span class="tg tg-nl">NULL</span>':'<span class="tg tg-nn">NOT NULL</span>'}
+function ctC(t){return{tip:'c-tip',warn:'c-warn',ok:'c-ok',pur:'c-pur'}[t]||'c-tip'}
+
+// ── Render ──
+function renderSB(){
+  const ch=CHS[curCh];
+  document.getElementById('sb').innerHTML=`<div class="sb-sec">${ch.label}</div>`+
+  ch.steps.map((s,i)=>`<div class="sb-item ${i===curSt?'active':''} ${done[curCh].has(i)&&i!==curSt?'done':''}" onclick="goSt(${i})">
+    <div class="sb-num">${done[curCh].has(i)&&i!==curSt?'✓':i+1}</div>
+    <div class="sb-lbl">${s.icon} ${s.title}</div>
+  </div>`).join('');
+}
+function renderProg(){
+  const s=CHS[curCh].steps.length;
+  const p=s>1?Math.round((done[curCh].size/s)*100):curSt===s-1?100:0;
+  document.getElementById('pf').style.width=p+'%';
+}
+function colsTbl(cols){
+  if(!cols||!cols.length)return'';
+  return cols.map(g=>`<div class="tbl-wrap"><div class="tbl-hdr">📋 <strong>${g.tbl}</strong></div>
+  <table class="ct"><tr><th>Column</th><th>Data Type</th><th>Nullable</th><th>Key</th></tr>
+  ${g.rows.map(r=>`<tr><td>${r.n}</td><td>${r.dt}</td><td>${nlT(r.nl)}</td><td>${tagH(r.k)}</td></tr>`).join('')}
+  </table></div>`).join('');
+}
+function resTbl(res){
+  if(!res)return'';
+  return`<div class="res-wrap"><div class="res-hdr">▶ ${res.hdr}</div>
+  <table class="rt"><tr>${res.cols.map(c=>`<th>${c}</th>`).join('')}</tr>
+  ${res.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}
+  </table>${res.note?`<div class="res-note">ℹ️ ${res.note}</div>`:''}</div>`;
+}
+function getDB(){const el=document.getElementById('dbName');const v=el?el.value.trim():'';return v||'ABC_Inventory'}
+function applyDB(code){return code.replace(/\{\{DB\}\}/g,getDB())}
+function lineNumbers(code){const n=code.split('\n').length;let g='';for(let i=1;i<=n;i++)g+=`<span>${i}</span>`;return g}
+function renderMain(){
+  const s=CHS[curCh].steps[curSt];
+  const tot=CHS[curCh].steps.length;
+  const db=getDB();
+  const codeRaw=applyDB(s.code);
+  const cards=s.cards?`<div class="cards">${s.cards.map(c=>`<div class="card"><div class="cl">${c.l}</div><div class="cv ${c.c||''}">${applyDB(c.v)}</div></div>`).join('')}</div>`:'';
+  const notes=s.notes?s.notes.map(n=>`<div class="call ${ctC(n.t)}"><span class="ci">${n.i}</span><span>${n.x}</span></div>`).join(''):'';
+  document.getElementById('mn').innerHTML=`
+    <div class="step-hdr"><div class="step-icon">${s.icon}</div>
+      <div><div class="step-title">${CHS[curCh].label} — ขั้นที่ ${curSt+1}/${tot}: ${s.title}</div>
+      <div class="step-sub">${s.sub}</div></div></div>
+    ${cards}
+    ${colsTbl(s.cols)}
+    ${notes}
+    <div class="code-box">
+      <div class="code-hdr">
+        <div style="display:flex;align-items:center">
+          <div class="cd-dots"><div class="cd" style="background:#FF5F57"></div><div class="cd" style="background:#FEBC2E"></div><div class="cd" style="background:#28C840"></div></div>
+          <span class="cd-lbl">T-SQL · ${esc(db)}</span>
+        </div>
+        <button class="cpbtn" id="cpb" onclick="doCopy()">📋 คัดลอกโค้ด</button>
+      </div>
+      <div class="code-scroll">
+        <div class="ln-gutter">${lineNumbers(codeRaw)}</div>
+        <pre>${hlSQL(codeRaw)}</pre>
+      </div>
+    </div>
+    ${resTbl(s.result)}
+    <div class="nav-row">
+      <button class="btn btn-p" onclick="goSt(${curSt-1})" ${curSt===0?'disabled':''}>← ก่อนหน้า</button>
+      <button class="btn btn-n" onclick="doNext()" ${curSt===tot-1?'disabled':''}>
+        ${curSt===tot-1?'เสร็จสิ้น ✓':'ถัดไป →'}
+      </button>
+    </div>`;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Actions ──
+function switchCh(id){
+  curCh=id;curSt=0;
+  [0,1,2].forEach(i=>document.getElementById('t'+i).className='tab'+(i===id?' active':''));
+  renderSB();renderProg();renderMain();
+}
+function goSt(i){
+  if(i<0||i>=CHS[curCh].steps.length)return;
+  done[curCh].add(curSt);curSt=i;
+  renderSB();renderProg();renderMain();
+}
+function doNext(){if(curSt<CHS[curCh].steps.length-1)goSt(curSt+1)}
+function doCopy(){
+  const code=applyDB(CHS[curCh].steps[curSt].code);
+  const b=document.getElementById('cpb');
+  const ok=()=>{b.textContent='✓ คัดลอกแล้ว!';b.className='cpbtn ok';setTimeout(()=>{b.textContent='📋 คัดลอกโค้ด';b.className='cpbtn'},2200)};
+  navigator.clipboard?navigator.clipboard.writeText(code).then(ok).catch(()=>fb(code,ok)):fb(code,ok);
+}
+function fb(c,cb){const t=document.createElement('textarea');t.value=c;document.body.appendChild(t);t.select();try{document.execCommand('copy');cb()}catch(e){}document.body.removeChild(t)}
+
+// Init
+const dbInput=document.getElementById('dbName');
+if(dbInput){
+  dbInput.addEventListener('input',()=>{
+    // อนุญาตเฉพาะ a-z A-Z 0-9 _ (กฎการตั้งชื่อฐานข้อมูล SQL Server)
+    dbInput.value=dbInput.value.replace(/[^A-Za-z0-9_]/g,'');
+    renderMain();
+  });
+}
+renderSB();renderProg();renderMain();
+</script>
+</body>
+</html>
