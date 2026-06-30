@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 <style id="reader-fit">
-/* ปรับความกว้างเนื้อหาให้เต็มขนาดอุปกรณ์อัตโนมัติ (เฉพาะตอนแสดงผลบนจอ ไม่กระทบการพิมพ์) */
+/* เต็มความกว้างอุปกรณ์ + เอาพื้นหลังขาวออก ใช้โทนนวลอ่อนกลืนกันทั้งหน้า อ่านสบายตา (เฉพาะบนจอ ไม่กระทบการพิมพ์) */
 @media screen{
-  html,body{background:#fff;margin:0}
+  html,body{background:#e9e4d8 !important;margin:0}
   .doc{
+    background:transparent !important;
+    box-shadow:none !important;
     max-width:100% !important;
     width:100% !important;
     margin:0 auto !important;
     box-sizing:border-box !important;
-    box-shadow:none !important;
     padding-top:clamp(20px,4vw,56px) !important;
     padding-bottom:clamp(48px,8vw,96px) !important;
     padding-left:clamp(16px,6vw,140px) !important;
     padding-right:clamp(16px,6vw,140px) !important;
   }
 }
-/* จอใหญ่มาก (เดสก์ท็อปกว้าง) จำกัดความกว้างให้อ่านสบาย ไม่ให้บรรทัดยาวเกินไป */
 @media screen and (min-width:1500px){
   .doc{max-width:1400px !important}
 }
